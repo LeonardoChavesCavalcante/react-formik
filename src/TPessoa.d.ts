@@ -2,5 +2,8 @@ export type TPessoa = {
     codigo: number;
     nome: string;
     email: string;
-    logradouro: string;
+    endereco: {
+        cidade: string,
+        logradouro: string
+    }
 };

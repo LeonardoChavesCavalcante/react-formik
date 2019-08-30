@@ -1,7 +1,7 @@
 import React, { FC, Fragment, useState, ChangeEvent, FormEvent } from 'react';
 import { TPessoa } from './TPessoa';
 import { getPessoa } from './PessoaService';
-import { HtmlAttributes } from 'csstype';
+import { DisplayFormikState } from './utils';
 
 type Props = {
     title: string;
@@ -14,16 +14,26 @@ const PessoaForm: FC<Props> = ({ title }) => {
         codigo: 1,
         nome: 'Leonardo',
         email: 'leonardo.chavescavalcante@gmail.com',
-        logradouro: 'Cocais'
+        endereco: {
+            cidade: "Maringa",
+            logradouro: 'Cocais'
+        }
     }
 
     const [pessoa, setPessoa] = useState<TPessoa>(initialPessoa);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        let value = e.target.value;
+        const value = e.target.value;
         let name = e.target.name;
         setPessoa(prevState => ({ ...prevState, [name]: value }))
     }
+
+    const handleChangeEndereco = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        let name = e.target.name;
+        setPessoa(prevState => ({ ...prevState, endereco: { ...prevState.endereco, [name]: value } }))
+    }
+
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -37,18 +47,24 @@ const PessoaForm: FC<Props> = ({ title }) => {
     return (
         <Fragment>
             <h1>PESSOA FORM {title} </h1>
-            <form onSubmit={handleSubmit}>
-                <label>Codigo</label>
-                <input name="codigo" value={pessoa.codigo} onChange={handleChange} />
-                <br />
-                <label>Nome</label>
-                <input name="nome" required data-value-missing="O nome precisa ser informado." value={pessoa.nome} onChange={handleChange} />
-                <br />
-                <button>Submit</button>
-            </form>
-            <h3>STATE</h3>
+            <div>
+                <form onSubmit={handleSubmit}>
+                    <label>Codigo</label>
+                    <input name="codigo" value={pessoa.codigo} onChange={handleChange} />
+                    <br />
+                    <label>Nome</label>
+                    <input name="nome" required data-value-missing="O nome precisa ser informado." value={pessoa.nome} onChange={handleChange} />
+                    <br />
+                    <label>Cidade</label>
+                    <input name="cidade" required data-value-missing="O nome precisa ser informado." value={pessoa.endereco.cidade} onChange={handleChangeEndereco} />
+                    <br />
+                    <button>Submit</button>
+                </form>
+            </div>
             <hr />
-            {JSON.stringify(pessoa)}
+            <div>
+                <DisplayFormikState {...pessoa} />
+            </div>
         </Fragment >
     )
 }
